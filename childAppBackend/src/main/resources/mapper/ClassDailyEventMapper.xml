@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dwebss.child.dao.ClassDailyEventMapper">
+  <resultMap id="BaseResultMap" type="kr.co.dwebss.child.model.ClassDailyEvent">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="CLASS_DAILY_EVENT_ID" jdbcType="INTEGER" property="classDailyEventId" />
+    <result column="EVENT_ORDER" jdbcType="INTEGER" property="eventOrder" />
+    <result column="EVENT_DATE" jdbcType="DATE" property="eventDate" />
+    <result column="CLASS_ID" jdbcType="INTEGER" property="classId" />
+    <result column="EVENT_CD" jdbcType="INTEGER" property="eventCd" />
+  </resultMap>
+</mapper>

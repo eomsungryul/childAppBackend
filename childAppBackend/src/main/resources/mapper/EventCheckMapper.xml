@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dwebss.child.dao.EventCheckMapper">
+  <resultMap id="BaseResultMap" type="kr.co.dwebss.child.model.EventCheck">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="EVENT_CHECK_ID" jdbcType="INTEGER" property="eventCheckId" />
+    <result column="EVENT_CHECK_DT" jdbcType="TIMESTAMP" property="eventCheckDt" />
+    <result column="CLASS_DAILY_EVENT_ID" jdbcType="INTEGER" property="classDailyEventId" />
+    <result column="CHILD_ID" jdbcType="CHAR" property="childId" />
+    <result column="CHECKER_USER_ID" jdbcType="INTEGER" property="checkerUserId" />
+    <result column="EVENT_CHECK_CD" jdbcType="INTEGER" property="eventCheckCd" />
+  </resultMap>
+</mapper>

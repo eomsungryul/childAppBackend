@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dwebss.child.dao.ClassBehalfTeacherMapper">
+  <resultMap id="BaseResultMap" type="kr.co.dwebss.child.model.ClassBehalfTeacher">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="CLASS_BEHALF_TEACHER_ID" jdbcType="INTEGER" property="classBehalfTeacherId" />
+    <result column="CLASS_ID" jdbcType="INTEGER" property="classId" />
+    <result column="BEHALF_START_D" jdbcType="DATE" property="behalfStartD" />
+    <result column="BEHALF_END_D" jdbcType="DATE" property="behalfEndD" />
+    <result column="BEHALF_TEACHER_USER_ID" jdbcType="INTEGER" property="behalfTeacherUserId" />
+  </resultMap>
+</mapper>
