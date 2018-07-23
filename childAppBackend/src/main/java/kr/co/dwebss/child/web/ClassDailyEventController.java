@@ -15,7 +15,7 @@ import java.util.List;
 * Created by 엄성렬 on 2018/07/22.
 */
 @RestController
-@RequestMapping("/class/daily/event")
+@RequestMapping("/class/event")
 public class ClassDailyEventController {
     @Resource
     private ClassDailyEventService classDailyEventService;
@@ -33,8 +33,10 @@ public class ClassDailyEventController {
     }
 
     @PutMapping
-    public Result update(@RequestBody ClassDailyEvent classDailyEvent) {
-        classDailyEventService.update(classDailyEvent);
+    public Result update(@RequestBody List<ClassDailyEvent> eventList) {
+    	for (ClassDailyEvent vo : eventList) {
+    		classDailyEventService.update(vo);
+    	}
         return ResultGenerator.genSuccessResult();
     }
 

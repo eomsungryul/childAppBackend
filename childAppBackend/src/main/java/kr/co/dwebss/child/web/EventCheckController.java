@@ -15,16 +15,18 @@ import java.util.List;
 * Created by 엄성렬 on 2018/07/22.
 */
 @RestController
-@RequestMapping("/event/check")
+@RequestMapping("/child/evnet")
 public class EventCheckController {
     @Resource
     private EventCheckService eventCheckService;
+    
 
     @PostMapping
     public Result add(@RequestBody EventCheck eventCheck) {
         eventCheckService.save(eventCheck);
         return ResultGenerator.genSuccessResult();
     }
+    
 
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id) {
@@ -32,12 +34,14 @@ public class EventCheckController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @PutMapping
-    public Result update(@RequestBody EventCheck eventCheck) {
+    @PutMapping("/{eventCheckId}")
+    public Result update(@RequestBody EventCheck eventCheck , @PathVariable Integer eventCheckId) {
+    	eventCheck.setEventCheckId(eventCheckId);
         eventCheckService.update(eventCheck);
+//        {event_check.checker_user_id(체크한사람의 user.user_id), event_check.event_check_cd(체크결과코드)}
         return ResultGenerator.genSuccessResult();
     }
-
+    @RequestMapping("/event/check")
     @GetMapping("/{id}")
     public Result detail(@PathVariable Integer id) {
         EventCheck eventCheck = eventCheckService.findById(id);

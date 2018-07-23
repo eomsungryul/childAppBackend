@@ -32,16 +32,21 @@ public class UserController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @PutMapping
-    public Result update(@RequestBody User user) {
+    @PutMapping("/{id}")
+    public Result update(@RequestBody User user, @PathVariable Integer id) {
+    	user.setUserId(id);
         userService.update(user);
         return ResultGenerator.genSuccessResult();
     }
 
-    @GetMapping("/{id}")
-    public Result detail(@PathVariable Integer id) {
-        User user = userService.findById(id);
-        return ResultGenerator.genSuccessResult(user);
+    @GetMapping("/email/{id:.+}")
+    public Result detail(@PathVariable String id) {
+//        User user = userService.findById(id);
+    	User user =  new User();
+    	user.setUserEmail(id);
+        User res = userService.selectUser(user);
+    	
+        return ResultGenerator.genSuccessResult(res);
     }
 
     @GetMapping

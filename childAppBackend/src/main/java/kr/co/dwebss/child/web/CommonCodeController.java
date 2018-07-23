@@ -15,7 +15,7 @@ import java.util.List;
 * Created by 엄성렬 on 2018/07/22.
 */
 @RestController
-@RequestMapping("/common/code")
+@RequestMapping("/code")
 public class CommonCodeController {
     @Resource
     private CommonCodeService commonCodeService;

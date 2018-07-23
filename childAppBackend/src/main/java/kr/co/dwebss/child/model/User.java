@@ -51,8 +51,54 @@ public class User {
 
     @Column(name = "USER_EMAIL")
     private String userEmail;
+    
 
     /**
+     * 어린이집이름
+     */
+    @Transient
+    private String centerNm;
+
+    /**
+     * 어린이집전화번호
+     */
+    @Transient
+    private String centerPhone;
+
+    
+    /**
+     * 어린이집 주소
+     */
+    @Transient
+    private String centerAddr;
+    
+
+    public String getCenterNm() {
+		return centerNm;
+	}
+
+	public void setCenterNm(String centerNm) {
+		this.centerNm = centerNm;
+	}
+
+	public String getCenterPhone() {
+		return centerPhone;
+	}
+
+	public void setCenterPhone(String centerPhone) {
+		this.centerPhone = centerPhone;
+	}
+
+	public String getCenterAddr() {
+		return centerAddr;
+	}
+
+	public void setCenterAddr(String centerAddr) {
+		this.centerAddr = centerAddr;
+	}
+
+
+	/**
      * getter사용자ID
      *
      * @return USER_ID - 사용자ID

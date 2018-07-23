@@ -8,4 +8,6 @@ import kr.co.dwebss.child.core.Service;
  */
 public interface UserService extends Service<User> {
 
+	User selectUser(User user);
+
 }

@@ -19,4 +19,5 @@ public class ClassDailyEventServiceImpl extends AbstractService<ClassDailyEvent>
     @Resource
     private ClassDailyEventMapper classDailyEventMapper;
 
+
 }
