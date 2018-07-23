@@ -41,7 +41,7 @@ public class EventCheckController {
 //        {event_check.checker_user_id(체크한사람의 user.user_id), event_check.event_check_cd(체크결과코드)}
         return ResultGenerator.genSuccessResult();
     }
-    @RequestMapping("/event/check")
+    
     @GetMapping("/{id}")
     public Result detail(@PathVariable Integer id) {
         EventCheck eventCheck = eventCheckService.findById(id);
