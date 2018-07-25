@@ -56,7 +56,6 @@ public class UserController {
     	User user =  new User();
     	user.setUserEmail(email);
     	
-    	
         User res = userService.selectUser(user);
         ResultCode resCode = ResultCode.SUCCESS;
         String message = "SUCCESS";

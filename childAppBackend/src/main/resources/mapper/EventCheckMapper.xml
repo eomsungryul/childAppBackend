@@ -65,9 +65,7 @@
 					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
 				</if>
 				#부모님의 USER_ID를 받은 경우
-				<if test="parentPhone!='' and parentPhone !=null">
-					AND A.CLASS_ID IN (SELECT CLASS_ID FROM CHILD WHERE PARENT_PHONE = #{parentPhone}) 
-				</if>
+				AND A.CLASS_ID IN (SELECT CLASS_ID FROM CHILD WHERE PARENT_PHONE = #{parentPhone}) 
 			UNION ALL
 			SELECT 
 				A.CLASS_ID, 
@@ -101,9 +99,155 @@
 					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
 				</if>
 				#부모님의 USER_ID를 받은 경우
-				<if test="parentPhone!='' and parentPhone !=null">
-					AND A.CLASS_ID IN (SELECT CLASS_ID FROM CHILD WHERE PARENT_PHONE = #{parentPhone}) 
+				AND A.CLASS_ID IN (SELECT CLASS_ID FROM CHILD WHERE PARENT_PHONE = #{parentPhone}) 
+			) A
+			ORDER BY CLASS_ID, CLASS_DAILY_EVENT_ID,  EVENT_CD, CHILD_NM
+	</select>
+  
+  
+	<select id="selectEventCheckListForTeacher" parameterType="kr.co.dwebss.child.model.EventCheck" resultMap="eventCheckMap">
+		SELECT * FROM (
+			SELECT 
+				A.CLASS_ID, 
+				CLASS_NM, 
+				CENTER_ID, 
+				TEACHER_USER_ID, (SELECT USER_NM FROM USER WHERE USER_ID=TEACHER_USER_ID) AS TEACHER_NM
+				,B.CLASS_DAILY_EVENT_ID
+				,EVENT_DATE
+				,EVENT_ORDER
+				,EVENT_CAR_NEED_YN
+				,DESTINY_NM
+				,EVENT_ALARM_START_T
+				,EVENT_ALARM_END_T,
+				C.EVENT_CHECK_ID,
+				'300001' AS EVENT_CD,
+				C.EVENT_START_DT AS EVENT_CHECK_DT,
+				CH.CHILD_ID,
+				CH.CHILD_NM,
+				C.CHECKER_USER_ID
+			FROM 
+				CLASS A 
+				LEFT JOIN CLASS_DAILY_EVENT B ON A.CLASS_ID=B.CLASS_ID  
+				LEFT JOIN CHILD CH ON A.CLASS_ID=CH.CLASS_ID
+				LEFT OUTER JOIN EVENT_CHECK C ON CH.CHILD_ID = C.CHILD_ID AND B.CLASS_DAILY_EVENT_ID = C.CLASS_DAILY_EVENT_ID
+			WHERE 
+				#날짜받은게 없으면 오늘날짜
+				<if test="eventDate ==null">
+					B.EVENT_DATE=CURDATE() 
 				</if>
+				<if test="eventDate !=null">
+					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
+				</if>
+				#선생님의 USER_ID를 받은 경우
+				and a.class_id in (select class_id from class where teacher_user_id = #{teacherUserId})
+			UNION ALL
+			SELECT 
+				A.CLASS_ID, 
+				CLASS_NM, 
+				CENTER_ID, 
+				TEACHER_USER_ID, (SELECT USER_NM FROM USER WHERE USER_ID=TEACHER_USER_ID) AS TEACHER_NM
+				,B.CLASS_DAILY_EVENT_ID
+				,EVENT_DATE
+				,EVENT_ORDER
+				,EVENT_CAR_NEED_YN
+				,DESTINY_NM
+				,EVENT_ALARM_START_T
+				,EVENT_ALARM_END_T,
+				CASE WHEN C.EVENT_END_DT IS NULL THEN NULL ELSE C.EVENT_CHECK_ID END AS EVENT_CHECK_ID,
+				'300002' AS EVENT_CD,
+				C.EVENT_END_DT AS EVENT_CHECK_DT,
+				CH.CHILD_ID,
+				CH.CHILD_NM,
+				CASE WHEN C.EVENT_END_DT IS NULL THEN NULL ELSE C.CHECKER_USER_ID END AS CHECKER_USER_ID
+			FROM 
+				CLASS A 
+				LEFT JOIN CLASS_DAILY_EVENT B ON A.CLASS_ID=B.CLASS_ID  
+				LEFT JOIN CHILD CH ON A.CLASS_ID=CH.CLASS_ID
+				LEFT OUTER JOIN EVENT_CHECK C ON CH.CHILD_ID = C.CHILD_ID AND B.CLASS_DAILY_EVENT_ID = C.CLASS_DAILY_EVENT_ID
+			WHERE 
+				#날짜받은게 없으면 오늘날짜
+				<if test="eventDate ==null">
+					B.EVENT_DATE=CURDATE() 
+				</if>
+				<if test="eventDate !=null">
+					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
+				</if>
+				#선생님의 USER_ID를 받은 경우
+				and a.class_id in (select class_id from class where teacher_user_id = #{teacherUserId})
+			) A
+			ORDER BY CLASS_ID, CLASS_DAILY_EVENT_ID,  EVENT_CD, CHILD_NM
+	</select>
+	
+	
+	<select id="selectEventCheckListForCenter" parameterType="kr.co.dwebss.child.model.EventCheck" resultMap="eventCheckMap">
+		SELECT * FROM (
+			SELECT 
+				A.CLASS_ID, 
+				CLASS_NM, 
+				CENTER_ID, 
+				TEACHER_USER_ID, (SELECT USER_NM FROM USER WHERE USER_ID=TEACHER_USER_ID) AS TEACHER_NM
+				,B.CLASS_DAILY_EVENT_ID
+				,EVENT_DATE
+				,EVENT_ORDER
+				,EVENT_CAR_NEED_YN
+				,DESTINY_NM
+				,EVENT_ALARM_START_T
+				,EVENT_ALARM_END_T,
+				C.EVENT_CHECK_ID,
+				'300001' AS EVENT_CD,
+				C.EVENT_START_DT AS EVENT_CHECK_DT,
+				CH.CHILD_ID,
+				CH.CHILD_NM,
+				C.CHECKER_USER_ID
+			FROM 
+				CLASS A 
+				LEFT JOIN CLASS_DAILY_EVENT B ON A.CLASS_ID=B.CLASS_ID  
+				LEFT JOIN CHILD CH ON A.CLASS_ID=CH.CLASS_ID
+				LEFT OUTER JOIN EVENT_CHECK C ON CH.CHILD_ID = C.CHILD_ID AND B.CLASS_DAILY_EVENT_ID = C.CLASS_DAILY_EVENT_ID
+			WHERE 
+				#날짜받은게 없으면 오늘날짜
+				<if test="eventDate ==null">
+					B.EVENT_DATE=CURDATE() 
+				</if>
+				<if test="eventDate !=null">
+					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
+				</if>
+				#원장님의 centerId를 받은 경우
+				and a.class_id in (select class_id from class where center_id=#{centerId})
+			UNION ALL
+			SELECT 
+				A.CLASS_ID, 
+				CLASS_NM, 
+				CENTER_ID, 
+				TEACHER_USER_ID, (SELECT USER_NM FROM USER WHERE USER_ID=TEACHER_USER_ID) AS TEACHER_NM
+				,B.CLASS_DAILY_EVENT_ID
+				,EVENT_DATE
+				,EVENT_ORDER
+				,EVENT_CAR_NEED_YN
+				,DESTINY_NM
+				,EVENT_ALARM_START_T
+				,EVENT_ALARM_END_T,
+				CASE WHEN C.EVENT_END_DT IS NULL THEN NULL ELSE C.EVENT_CHECK_ID END AS EVENT_CHECK_ID,
+				'300002' AS EVENT_CD,
+				C.EVENT_END_DT AS EVENT_CHECK_DT,
+				CH.CHILD_ID,
+				CH.CHILD_NM,
+				CASE WHEN C.EVENT_END_DT IS NULL THEN NULL ELSE C.CHECKER_USER_ID END AS CHECKER_USER_ID
+			FROM 
+				CLASS A 
+				LEFT JOIN CLASS_DAILY_EVENT B ON A.CLASS_ID=B.CLASS_ID  
+				LEFT JOIN CHILD CH ON A.CLASS_ID=CH.CLASS_ID
+				LEFT OUTER JOIN EVENT_CHECK C ON CH.CHILD_ID = C.CHILD_ID AND B.CLASS_DAILY_EVENT_ID = C.CLASS_DAILY_EVENT_ID
+			WHERE 
+				#날짜받은게 없으면 오늘날짜
+				<if test="eventDate ==null">
+					B.EVENT_DATE=CURDATE() 
+				</if>
+				<if test="eventDate !=null">
+					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
+				</if>
+				#원장님의 centerId를 받은 경우
+				and a.class_id in (select class_id from class where center_id=#{centerId})
 			) A
 			ORDER BY CLASS_ID, CLASS_DAILY_EVENT_ID,  EVENT_CD, CHILD_NM
 	</select>

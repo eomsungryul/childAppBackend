@@ -11,5 +11,9 @@ import kr.co.dwebss.child.core.Service;
  */
 public interface EventCheckService extends Service<EventCheck> {
 
-	List<EventCheck> selectEventCheck(EventCheck param);
+	List<EventCheck> selectEventCheckListForParent(EventCheck param);
+
+	List<EventCheck> selectEventCheckListForTeacher(EventCheck param);
+
+	List<EventCheck> selectEventCheckListForCenter(EventCheck param);
 }

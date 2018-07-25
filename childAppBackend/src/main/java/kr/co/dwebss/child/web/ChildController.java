@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,9 +47,26 @@ public class ChildController {
 	@Resource
 	private EventCheckService eventCheckService;
 
+    @Value("${systemVersion}") 
+    String systemVersion;
+    
+    @Value("${dummyPhone}") 
+    String dummyPhone;
+    
+    @Value("${dummyCenterId}") 
+    String dummyCenterId;
+    
+    @Value("${dummyTeacherUserId}") 
+    String dummyTeacherUserId;
+	
+	
+
 	@PostMapping("/event_check")
 	public Result add(@RequestBody EventCheck eventCheck) {
-		eventCheckService.save(eventCheck);
+		if(systemVersion.equals("dev")) {
+		}else {
+			eventCheckService.save(eventCheck);
+		}
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -78,103 +96,96 @@ public class ChildController {
 		return ResultGenerator.genSuccessResult(pageInfo);
 	}
 
-	@GetMapping(value={"/parent/{phone}","/parent/{phone}/{date}"})
-	 public Result getMyChildsCheckEventList(@PathVariable String phone,
+	@GetMapping("/parent/{phone}/{date}")
+	public Result getMyChildsCheckEventListWithDate(@PathVariable String phone,
 	 @PathVariable @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date) {
-//	public Result getMyChildsCheckEventList(@PathVariable String phone) {
 		EventCheck param = new EventCheck();
 		param.setParentPhone(phone);
-		
-		List<EventCheck> classList = eventCheckService.selectEventCheck(param);
-
-		
-		
-		int beforeClassid = 0;
-		int beforeDailyEventid = 0;
-		String beforeDailyEventidCd = new String();
-
-		JSONArray classArr = new JSONArray();
-		JSONArray classDailyEventArr = new JSONArray();
-		JSONArray eventChkArr = new JSONArray();
-
-		JSONObject classObj = new JSONObject();
-		JSONObject classDailyEventObj = new JSONObject();
-		JSONObject eventChkObj = new JSONObject();
-		
-		
-		// classArr
-		for (int i = 0; i < classList.size(); i++) {
-			EventCheck eventCheck = classList.get(i);
-			if (eventCheck.getClassId() != beforeClassid) {
-				classObj = new JSONObject();
-				classObj.put("classId", eventCheck.getClassId());
-				classObj.put("classNm", eventCheck.getClassNm());
-				classObj.put("centerId", eventCheck.getCenterId());
-				classObj.put("teacherUserId", eventCheck.getTeacherUserId());
-				classObj.put("teacherNm", eventCheck.getTeacherNm());
-				classArr.add(classObj);
-			}
-			beforeClassid = eventCheck.getClassId();
+		if(systemVersion.equals("dev")) {
+			param.setParentPhone(dummyPhone);
 		}
 		
-		// classDailyEventArr
-		for (int i = 0; i < classList.size(); i++) {
-			EventCheck eventCheck = classList.get(i);
-			
-			if (!(Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd()))
-					.equals(beforeDailyEventidCd)) {
-				classDailyEventObj = new JSONObject();
-				classDailyEventObj.put("classDailyEventId", eventCheck.getClassDailyEventId());
-				classDailyEventObj.put("eventDate", eventCheck.getEventDate());
-				classDailyEventObj.put("eventOrder", eventCheck.getEventOrder());
-				classDailyEventObj.put("classId", eventCheck.getClassId());
-				classDailyEventObj.put("destinyNm", eventCheck.getDestinyNm());
-				classDailyEventObj.put("eventAlarmEndT", eventCheck.getEventAlarmEndT());
-				classDailyEventObj.put("eventAlarmStartT", eventCheck.getEventAlarmStartT());
-				classDailyEventObj.put("eventCarNeedYn", eventCheck.getEventCarNeedYn());
-				classDailyEventObj.put("eventCd", eventCheck.getEventCd());
-				classDailyEventArr.add(classDailyEventObj);
-			}
-			
-			beforeDailyEventidCd = Integer.toString(eventCheck.getClassDailyEventId())
-					+ Integer.toString(eventCheck.getEventCd());
-		}
-
-		for (int i = 0; i < classDailyEventArr.size(); i++) {
-			classDailyEventObj = (JSONObject) classDailyEventArr.get(i);
-			eventChkArr = new JSONArray();
-			for (int j = 0; j < classList.size(); j++) {
-				EventCheck eventCheck = classList.get(j);
-				if((Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd()))
-						.equals(classDailyEventObj.get("classDailyEventId").toString()+classDailyEventObj.get("eventCd").toString())) {
-					eventChkObj = new JSONObject();
-					eventChkObj.put("eventCheckId", eventCheck.getEventCheckId());
-					eventChkObj.put("eventCheckDt", eventCheck.getEventCheckDt());
-					eventChkObj.put("childId", eventCheck.getChildId());
-					eventChkObj.put("classDailyEventId", eventCheck.getClassDailyEventId());
-					eventChkObj.put("childNm", eventCheck.getChildNm());
-					eventChkObj.put("checkerUserId", eventCheck.getCheckerUserId());
-					eventChkArr.add(eventChkObj);
-				}
-			}
-			classDailyEventObj.put("eventCheck", eventChkArr);
-		}
-
-		JSONArray classDailyEvent = null;
-		for (int i = 0; i < classArr.size(); i++) {
-			classObj = (JSONObject) classArr.get(i);
-			classDailyEvent = new JSONArray();
-			for (int j = 0; j < classDailyEventArr.size(); j++) {
-				classDailyEventObj = (JSONObject) classDailyEventArr.get(j);
-				if(classObj.get("classId").equals(classDailyEventObj.get("classId"))) {
-					classDailyEvent.add(classDailyEventObj);
-				}
-			}
-			classObj.put("classDailyEvent", classDailyEvent);
-		}
-
+		List<EventCheck> classList = eventCheckService.selectEventCheckListForParent(param);
+		JSONArray classArr = getMainCheckEventList(classList);
+		
 		return ResultGenerator.genSuccessResult(classArr);
 	}
+	
+	@GetMapping(value={"/parent/{phone}"})
+	public Result getMyChildsCheckEventList(@PathVariable String phone) {
+		EventCheck param = new EventCheck();
+		param.setParentPhone(phone);
+		if(systemVersion.equals("dev")) {
+			param.setParentPhone(dummyPhone);
+		}
+		
+		List<EventCheck> classList = eventCheckService.selectEventCheckListForParent(param);
+		JSONArray classArr = getMainCheckEventList(classList);
+		
+		return ResultGenerator.genSuccessResult(classArr);
+	}
+	
+	@GetMapping("/teacher/{userId}/{date}")
+	public Result teacherMainWithDate(@PathVariable Integer userId,
+			@PathVariable @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date) {
+		EventCheck param = new EventCheck();
+		param.setTeacherUserId(userId);
+
+		if(systemVersion.equals("dev")) {
+			param.setTeacherUserId(Integer.parseInt(dummyTeacherUserId));
+		}
+		
+		List<EventCheck> classList = eventCheckService.selectEventCheckListForTeacher(param);
+		JSONArray classArr = getMainCheckEventList(classList);
+		
+		return ResultGenerator.genSuccessResult(classArr);
+	}
+	
+	@GetMapping(value={"/teacher/{userId}"})
+	public Result teacherMain(@PathVariable Integer userId) {
+		EventCheck param = new EventCheck();
+		param.setTeacherUserId(userId);
+		if(systemVersion.equals("dev")) {
+			param.setTeacherUserId(Integer.parseInt(dummyTeacherUserId));
+		}
+		
+		List<EventCheck> classList = eventCheckService.selectEventCheckListForTeacher(param);
+		JSONArray classArr = getMainCheckEventList(classList);
+		
+		return ResultGenerator.genSuccessResult(classArr);
+	}
+	
+	
+	@GetMapping("/center/{centerId}/{date}")
+	public Result centerMainWithDate(@PathVariable Integer centerId,
+			@PathVariable @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date) {
+		EventCheck param = new EventCheck();
+		param.setCenterId(centerId);
+		if(systemVersion.equals("dev")) {
+			param.setCenterId(Integer.parseInt(dummyCenterId));
+		}
+		
+		List<EventCheck> classList = eventCheckService.selectEventCheckListForCenter(param);
+		JSONArray classArr = getMainCheckEventList(classList);
+		
+		return ResultGenerator.genSuccessResult(classArr);
+	}
+	
+	@GetMapping(value={"/center/{centerId}"})
+	public Result centerMain(@PathVariable Integer centerId) {
+		EventCheck param = new EventCheck();
+		param.setCenterId(centerId);
+		if(systemVersion.equals("dev")) {
+			param.setCenterId(Integer.parseInt(dummyCenterId));
+		}
+		
+		List<EventCheck> classList = eventCheckService.selectEventCheckListForCenter(param);
+		JSONArray classArr = getMainCheckEventList(classList);
+		
+		return ResultGenerator.genSuccessResult(classArr);
+	}
+	
+	
 	
 //	@GetMapping("/parent/{phone}")
 	// public Result getMyChildsCheckEventList(@PathVariable String phone,
@@ -182,7 +193,7 @@ public class ChildController {
 	public Result getMyChildsCheckEventListBk(@PathVariable String phone) {
 		EventCheck param = new EventCheck();
 		param.setParentPhone(phone);
-		List<EventCheck> classList = eventCheckService.selectEventCheck(param);
+		List<EventCheck> classList = eventCheckService.selectEventCheckListForParent(param);
 		
 		int beforeClassid = 0;
 		int beforeDailyEventid = 0;
@@ -273,5 +284,94 @@ public class ChildController {
 		}
 		
 		return ResultGenerator.genSuccessResult(classArr);
+	}
+	
+	public JSONArray getMainCheckEventList(List<EventCheck> classList) {
+		
+		int beforeClassid = 0;
+		int beforeDailyEventid = 0;
+		String beforeDailyEventidCd = new String();
+
+		JSONArray classArr = new JSONArray();
+		JSONArray classDailyEventArr = new JSONArray();
+		JSONArray eventChkArr = new JSONArray();
+
+		JSONObject classObj = new JSONObject();
+		JSONObject classDailyEventObj = new JSONObject();
+		JSONObject eventChkObj = new JSONObject();
+		
+		
+		// classArr
+		for (int i = 0; i < classList.size(); i++) {
+			EventCheck eventCheck = classList.get(i);
+			if (eventCheck.getClassId() != beforeClassid) {
+				classObj = new JSONObject();
+				classObj.put("classId", eventCheck.getClassId());
+				classObj.put("classNm", eventCheck.getClassNm());
+				classObj.put("centerId", eventCheck.getCenterId());
+				classObj.put("teacherUserId", eventCheck.getTeacherUserId());
+				classObj.put("teacherNm", eventCheck.getTeacherNm());
+				classArr.add(classObj);
+			}
+			beforeClassid = eventCheck.getClassId();
+		}
+		
+		// classDailyEventArr
+		for (int i = 0; i < classList.size(); i++) {
+			EventCheck eventCheck = classList.get(i);
+			
+			if (!(Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd()))
+					.equals(beforeDailyEventidCd)) {
+				classDailyEventObj = new JSONObject();
+				classDailyEventObj.put("classDailyEventId", eventCheck.getClassDailyEventId());
+				classDailyEventObj.put("eventDate", eventCheck.getEventDate());
+				classDailyEventObj.put("eventOrder", eventCheck.getEventOrder());
+				classDailyEventObj.put("classId", eventCheck.getClassId());
+				classDailyEventObj.put("destinyNm", eventCheck.getDestinyNm());
+				classDailyEventObj.put("eventAlarmEndT", eventCheck.getEventAlarmEndT());
+				classDailyEventObj.put("eventAlarmStartT", eventCheck.getEventAlarmStartT());
+				classDailyEventObj.put("eventCarNeedYn", eventCheck.getEventCarNeedYn());
+				classDailyEventObj.put("eventCd", eventCheck.getEventCd());
+				classDailyEventArr.add(classDailyEventObj);
+			}
+			
+			beforeDailyEventidCd = Integer.toString(eventCheck.getClassDailyEventId())
+					+ Integer.toString(eventCheck.getEventCd());
+		}
+
+		for (int i = 0; i < classDailyEventArr.size(); i++) {
+			classDailyEventObj = (JSONObject) classDailyEventArr.get(i);
+			eventChkArr = new JSONArray();
+			for (int j = 0; j < classList.size(); j++) {
+				EventCheck eventCheck = classList.get(j);
+				if((Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd()))
+						.equals(classDailyEventObj.get("classDailyEventId").toString()+classDailyEventObj.get("eventCd").toString())) {
+					eventChkObj = new JSONObject();
+					eventChkObj.put("eventCheckId", eventCheck.getEventCheckId());
+					eventChkObj.put("eventCheckDt", eventCheck.getEventCheckDt());
+					eventChkObj.put("childId", eventCheck.getChildId());
+					eventChkObj.put("classDailyEventId", eventCheck.getClassDailyEventId());
+					eventChkObj.put("childNm", eventCheck.getChildNm());
+					eventChkObj.put("checkerUserId", eventCheck.getCheckerUserId());
+					eventChkArr.add(eventChkObj);
+				}
+			}
+			classDailyEventObj.put("eventCheck", eventChkArr);
+		}
+
+		JSONArray classDailyEvent = null;
+		for (int i = 0; i < classArr.size(); i++) {
+			classObj = (JSONObject) classArr.get(i);
+			classDailyEvent = new JSONArray();
+			for (int j = 0; j < classDailyEventArr.size(); j++) {
+				classDailyEventObj = (JSONObject) classDailyEventArr.get(j);
+				if(classObj.get("classId").equals(classDailyEventObj.get("classId"))) {
+					classDailyEvent.add(classDailyEventObj);
+				}
+			}
+			classObj.put("classDailyEvent", classDailyEvent);
+		}
+		return classArr;
+		
 	}
 }
