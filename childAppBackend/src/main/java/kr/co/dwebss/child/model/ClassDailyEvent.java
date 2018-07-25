@@ -1,6 +1,8 @@
 package kr.co.dwebss.child.model;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Table(name = "class_daily_event")
@@ -30,13 +32,33 @@ public class ClassDailyEvent {
     @Column(name = "CLASS_ID")
     private Integer classId;
 
-    /**
-     * 이벤트코드
-     */
-    @Column(name = "EVENT_CD")
-    private Integer eventCd;
+    @Column(name = "DESTINY_NM")
+    private String destinyNm;
+    
 
-    /**
+    @Column(name = "EVENT_ALARM_END_T")
+    private Integer eventAlarmEndT;
+    
+    @Column(name = "EVENT_ALARM_START_T")
+    private Integer eventAlarmStartT;
+    
+
+    @Column(name = "EVENT_CAR_NEED_YN")
+    private String eventCarNeedYn;
+    
+    @Transient
+    private List<EventCheck> eventCheckList;
+    
+
+    public List<EventCheck> getEventCheckList() {
+		return eventCheckList;
+	}
+
+	public void setEventCheckList(List<EventCheck> eventCheckList) {
+		this.eventCheckList = eventCheckList;
+	}
+
+	/**
      * getter클래스일일이벤트ID
      *
      * @return CLASS_DAILY_EVENT_ID - 클래스일일이벤트ID
@@ -108,21 +130,38 @@ public class ClassDailyEvent {
         this.classId = classId;
     }
 
-    /**
-     * getter이벤트코드
-     *
-     * @return EVENT_CD - 이벤트코드
-     */
-    public Integer getEventCd() {
-        return eventCd;
-    }
+	public String getDestinyNm() {
+		return destinyNm;
+	}
 
-    /**
-     * setter이벤트코드
-     *
-     * @param eventCd 이벤트코드
-     */
-    public void setEventCd(Integer eventCd) {
-        this.eventCd = eventCd;
-    }
+	public void setDestinyNm(String destinyNm) {
+		this.destinyNm = destinyNm;
+	}
+
+	public Integer getEventAlarmEndT() {
+		return eventAlarmEndT;
+	}
+
+	public void setEventAlarmEndT(Integer eventAlarmEndT) {
+		this.eventAlarmEndT = eventAlarmEndT;
+	}
+
+	public Integer getEventAlarmStartT() {
+		return eventAlarmStartT;
+	}
+
+	public void setEventAlarmStartT(Integer eventAlarmStartT) {
+		this.eventAlarmStartT = eventAlarmStartT;
+	}
+
+	public String getEventCarNeedYn() {
+		return eventCarNeedYn;
+	}
+
+	public void setEventCarNeedYn(String eventCarNeedYn) {
+		this.eventCarNeedYn = eventCarNeedYn;
+	}
+    
+    
+
 }

@@ -1,5 +1,8 @@
 package kr.co.dwebss.child.service;
 import kr.co.dwebss.child.model.EventCheck;
+
+import java.util.List;
+
 import kr.co.dwebss.child.core.Service;
 
 
@@ -8,4 +11,5 @@ import kr.co.dwebss.child.core.Service;
  */
 public interface EventCheckService extends Service<EventCheck> {
 
+	List<EventCheck> selectEventCheck(EventCheck param);
 }

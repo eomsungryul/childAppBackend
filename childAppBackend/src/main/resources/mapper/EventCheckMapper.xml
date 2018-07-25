@@ -1,15 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.dwebss.child.dao.EventCheckMapper">
-  <resultMap id="BaseResultMap" type="kr.co.dwebss.child.model.EventCheck">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="EVENT_CHECK_ID" jdbcType="INTEGER" property="eventCheckId" />
-    <result column="EVENT_CHECK_DT" jdbcType="TIMESTAMP" property="eventCheckDt" />
-    <result column="CLASS_DAILY_EVENT_ID" jdbcType="INTEGER" property="classDailyEventId" />
-    <result column="CHILD_ID" jdbcType="CHAR" property="childId" />
-    <result column="CHECKER_USER_ID" jdbcType="INTEGER" property="checkerUserId" />
-    <result column="EVENT_CHECK_CD" jdbcType="INTEGER" property="eventCheckCd" />
-  </resultMap>
+	<resultMap id="eventCheckMap" type="kr.co.dwebss.child.model.EventCheck">
+	
+		<id column="EVENT_CHECK_ID" jdbcType="INTEGER" property="eventCheckId" />
+		<result column="CLASS_DAILY_EVENT_ID" jdbcType="INTEGER" property="classDailyEventId" />
+		<result column="CHILD_ID" jdbcType="CHAR" property="childId" />
+		<result column="CHECKER_USER_ID" jdbcType="INTEGER" property="checkerUserId" />
+		<result column="EVENT_START_DT" jdbcType="TIMESTAMP" property="eventStartDt" />
+		<result column="EVENT_END_DT" jdbcType="TIMESTAMP" property="eventEndDt" />
+		
+		<result column="EVENT_CD" jdbcType="INTEGER" property="eventCd" />
+		<result column="CLASS_ID" jdbcType="INTEGER" property="classId" />
+		<result column="CLASS_NM" jdbcType="VARCHAR" property="classNm" />
+		<result column="CENTER_ID" jdbcType="INTEGER" property="centerId" />
+		<result column="TEACHER_USER_ID" jdbcType="INTEGER" property="teacherUserId" />
+		
+		<result column="TEACHER_NM" jdbcType="VARCHAR" property="teacherNm" />
+		
+		<result column="EVENT_ORDER" jdbcType="INTEGER" property="eventOrder" />
+		
+		<result column="EVENT_DATE" jdbcType="TIMESTAMP" property="eventDate" />
+		<result column="DESTINY_NM" jdbcType="VARCHAR" property="destinyNm" />
+		<result column="EVENT_ALARM_END_T" jdbcType="INTEGER" property="eventAlarmEndT" />
+		<result column="EVENT_ALARM_START_T" jdbcType="INTEGER" property="eventAlarmStartT" />
+		
+		<result column="EVENT_CAR_NEED_YN" jdbcType="VARCHAR" property="eventCarNeedYn" />
+		<result column="EVENT_CHECK_DT" jdbcType="TIMESTAMP" property="eventCheckDt" />
+		<result column="CHILD_NM" jdbcType="VARCHAR" property="childNm" />
+		
+	</resultMap>
+  
+	<select id="selectEventCheckListForParent" parameterType="kr.co.dwebss.child.model.EventCheck" resultMap="eventCheckMap">
+		SELECT * FROM (
+			SELECT 
+				A.CLASS_ID, 
+				CLASS_NM, 
+				CENTER_ID, 
+				TEACHER_USER_ID, (SELECT USER_NM FROM USER WHERE USER_ID=TEACHER_USER_ID) AS TEACHER_NM
+				,B.CLASS_DAILY_EVENT_ID
+				,EVENT_DATE
+				,EVENT_ORDER
+				,EVENT_CAR_NEED_YN
+				,DESTINY_NM
+				,EVENT_ALARM_START_T
+				,EVENT_ALARM_END_T,
+				C.EVENT_CHECK_ID,
+				'300001' AS EVENT_CD,
+				C.EVENT_START_DT AS EVENT_CHECK_DT,
+				CH.CHILD_ID,
+				CH.CHILD_NM,
+				C.CHECKER_USER_ID
+			FROM 
+				CLASS A 
+				LEFT JOIN CLASS_DAILY_EVENT B ON A.CLASS_ID=B.CLASS_ID  
+				LEFT JOIN CHILD CH ON A.CLASS_ID=CH.CLASS_ID
+				LEFT OUTER JOIN EVENT_CHECK C ON CH.CHILD_ID = C.CHILD_ID AND B.CLASS_DAILY_EVENT_ID = C.CLASS_DAILY_EVENT_ID
+			WHERE 
+				#날짜받은게 없으면 오늘날짜
+				<if test="eventDate ==null">
+					B.EVENT_DATE=CURDATE() 
+				</if>
+				<if test="eventDate !=null">
+					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
+				</if>
+				#부모님의 USER_ID를 받은 경우
+				<if test="parentPhone!='' and parentPhone !=null">
+					AND A.CLASS_ID IN (SELECT CLASS_ID FROM CHILD WHERE PARENT_PHONE = #{parentPhone}) 
+				</if>
+			UNION ALL
+			SELECT 
+				A.CLASS_ID, 
+				CLASS_NM, 
+				CENTER_ID, 
+				TEACHER_USER_ID, (SELECT USER_NM FROM USER WHERE USER_ID=TEACHER_USER_ID) AS TEACHER_NM
+				,B.CLASS_DAILY_EVENT_ID
+				,EVENT_DATE
+				,EVENT_ORDER
+				,EVENT_CAR_NEED_YN
+				,DESTINY_NM
+				,EVENT_ALARM_START_T
+				,EVENT_ALARM_END_T,
+				CASE WHEN C.EVENT_END_DT IS NULL THEN NULL ELSE C.EVENT_CHECK_ID END AS EVENT_CHECK_ID,
+				'300002' AS EVENT_CD,
+				C.EVENT_END_DT AS EVENT_CHECK_DT,
+				CH.CHILD_ID,
+				CH.CHILD_NM,
+				CASE WHEN C.EVENT_END_DT IS NULL THEN NULL ELSE C.CHECKER_USER_ID END AS CHECKER_USER_ID
+			FROM 
+				CLASS A 
+				LEFT JOIN CLASS_DAILY_EVENT B ON A.CLASS_ID=B.CLASS_ID  
+				LEFT JOIN CHILD CH ON A.CLASS_ID=CH.CLASS_ID
+				LEFT OUTER JOIN EVENT_CHECK C ON CH.CHILD_ID = C.CHILD_ID AND B.CLASS_DAILY_EVENT_ID = C.CLASS_DAILY_EVENT_ID
+			WHERE 
+				#날짜받은게 없으면 오늘날짜
+				<if test="eventDate ==null">
+					B.EVENT_DATE=CURDATE() 
+				</if>
+				<if test="eventDate !=null">
+					B.EVENT_DATE= DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
+				</if>
+				#부모님의 USER_ID를 받은 경우
+				<if test="parentPhone!='' and parentPhone !=null">
+					AND A.CLASS_ID IN (SELECT CLASS_ID FROM CHILD WHERE PARENT_PHONE = #{parentPhone}) 
+				</if>
+			) A
+			ORDER BY CLASS_ID, CLASS_DAILY_EVENT_ID,  EVENT_CD, CHILD_NM
+	</select>
+  
+  
+  
+  
 </mapper>

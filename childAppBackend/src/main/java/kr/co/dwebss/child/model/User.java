@@ -1,5 +1,7 @@
 package kr.co.dwebss.child.model;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 public class User {
@@ -49,9 +51,14 @@ public class User {
     @Column(name = "CONFIRM_YN")
     private String confirmYn;
 
-    @Column(name = "USER_EMAIL")
-    private String userEmail;
+    @Column(name = "USER_EMAIL_GMAIL")
+    private String userEmailGmail;
     
+    @Column(name = "USER_EMAIL_FACEBOOK")
+    private String userEmailFacebook;
+
+    @Transient
+    private String userEmail;
 
     /**
      * 어린이집이름
@@ -65,8 +72,49 @@ public class User {
     @Transient
     private String centerPhone;
 
+    @Transient
+    private List<Child> myChildList;
+
+    @Transient
+    private List<ClassVO> myClassList;
     
-    /**
+    @Transient
+    private List<ClassVO> centerClassList;
+    
+    
+    public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public List<Child> getMyChildList() {
+		return myChildList;
+	}
+
+	public void setMyChildList(List<Child> myChildList) {
+		this.myChildList = myChildList;
+	}
+
+	public List<ClassVO> getMyClassList() {
+		return myClassList;
+	}
+
+	public void setMyClassList(List<ClassVO> myClassList) {
+		this.myClassList = myClassList;
+	}
+
+	public List<ClassVO> getCenterClassList() {
+		return centerClassList;
+	}
+
+	public void setCenterClassList(List<ClassVO> centerClassList) {
+		this.centerClassList = centerClassList;
+	}
+
+	/**
      * 어린이집 주소
      */
     @Transient
@@ -238,17 +286,22 @@ public class User {
         this.confirmYn = confirmYn;
     }
 
-    /**
-     * @return USER_EMAIL
-     */
-    public String getUserEmail() {
-        return userEmail;
-    }
+	public String getUserEmailGmail() {
+		return userEmailGmail;
+	}
 
-    /**
-     * @param userEmail
-     */
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
+	public void setUserEmailGmail(String userEmailGmail) {
+		this.userEmailGmail = userEmailGmail;
+	}
+
+	public String getUserEmailFacebook() {
+		return userEmailFacebook;
+	}
+
+	public void setUserEmailFacebook(String userEmailFacebook) {
+		this.userEmailFacebook = userEmailFacebook;
+	}
+    
+    
+
 }

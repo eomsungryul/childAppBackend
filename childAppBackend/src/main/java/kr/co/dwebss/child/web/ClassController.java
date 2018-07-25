@@ -2,7 +2,7 @@ package kr.co.dwebss.child.web;
 
 import kr.co.dwebss.child.core.Result;
 import kr.co.dwebss.child.core.ResultGenerator;
-import kr.co.dwebss.child.model.Class;
+import kr.co.dwebss.child.model.ClassVO;
 import kr.co.dwebss.child.service.ClassService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -21,7 +21,7 @@ public class ClassController {
     private ClassService classService;
 
     @PostMapping
-    public Result add(@RequestBody Class vo) {
+    public Result add(@RequestBody ClassVO vo) {
         classService.save(vo);
         return ResultGenerator.genSuccessResult();
     }
@@ -33,21 +33,21 @@ public class ClassController {
     }
 
     @PutMapping
-    public Result update(@RequestBody Class vo) {
+    public Result update(@RequestBody ClassVO vo) {
         classService.update(vo);
         return ResultGenerator.genSuccessResult();
     }
 
     @GetMapping("/{id}")
     public Result detail(@PathVariable Integer id) {
-        Class vo = classService.findById(id);
+        ClassVO vo = classService.findById(id);
         return ResultGenerator.genSuccessResult(vo);
     }
 
     @GetMapping
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<Class> list = classService.findAll();
+        List<ClassVO> list = classService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }

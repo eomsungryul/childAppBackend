@@ -1,8 +1,10 @@
 package kr.co.dwebss.child.model;
 
+import java.util.List;
+
 import javax.persistence.*;
 
-public class Class {
+public class ClassVO {
     /**
      * 클래스ID
      */
@@ -27,8 +29,42 @@ public class Class {
      */
     @Column(name = "TEACHER_USER_ID")
     private Integer teacherUserId;
+    
+    @Transient
+    private List<ClassDailyEvent> classDailyEventList;
+    
 
-    /**
+    @Transient
+    private String parentPhone;
+    
+    @Transient
+    private String teacherUserNm;
+
+    public String getTeacherUserNm() {
+		return teacherUserNm;
+	}
+
+	public void setTeacherUserNm(String teacherUserNm) {
+		this.teacherUserNm = teacherUserNm;
+	}
+
+	public String getParentPhone() {
+		return parentPhone;
+	}
+
+	public void setParentPhone(String parentPhone) {
+		this.parentPhone = parentPhone;
+	}
+
+	public List<ClassDailyEvent> getClassDailyEventList() {
+		return classDailyEventList;
+	}
+
+	public void setClassDailyEventList(List<ClassDailyEvent> classDailyEventList) {
+		this.classDailyEventList = classDailyEventList;
+	}
+
+	/**
      * getter클래스ID
      *
      * @return CLASS_ID - 클래스ID

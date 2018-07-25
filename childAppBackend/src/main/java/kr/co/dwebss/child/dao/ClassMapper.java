@@ -1,7 +1,11 @@
 package kr.co.dwebss.child.dao;
 
-import kr.co.dwebss.child.core.Mapper;
-import kr.co.dwebss.child.model.Class;
+import java.util.List;
 
-public interface ClassMapper extends Mapper<Class> {
+import kr.co.dwebss.child.core.Mapper;
+import kr.co.dwebss.child.model.ClassVO;
+
+public interface ClassMapper extends Mapper<ClassVO> {
+
+	List<ClassVO> selectClass(ClassVO vo);
 }

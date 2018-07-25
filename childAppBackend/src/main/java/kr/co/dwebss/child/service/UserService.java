@@ -10,4 +10,6 @@ public interface UserService extends Service<User> {
 
 	User selectUser(User user);
 
+	void updateUser(User user);
+
 }

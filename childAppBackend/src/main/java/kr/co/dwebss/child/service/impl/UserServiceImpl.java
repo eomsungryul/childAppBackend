@@ -24,4 +24,9 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 		return userMapper.selectUser(user);
 	}
 
+	@Override
+	public void updateUser(User user) {
+		userMapper.updateUser(user);
+	}
+
 }

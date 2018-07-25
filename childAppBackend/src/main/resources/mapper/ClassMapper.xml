@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.dwebss.child.dao.ClassMapper">
-  <resultMap id="BaseResultMap" type="kr.co.dwebss.child.model.Class">
+  <resultMap id="classMap" type="kr.co.dwebss.child.model.ClassVO">
     <!--
       WARNING - @mbg.generated
     -->
@@ -9,5 +9,32 @@
     <result column="CLASS_NM" jdbcType="VARCHAR" property="classNm" />
     <result column="CENTER_ID" jdbcType="INTEGER" property="centerId" />
     <result column="TEACHER_USER_ID" jdbcType="INTEGER" property="teacherUserId" />
+    <result column="TEACHER_USER_NM" jdbcType="VARCHAR" property="teacherUserNm" />
+    <result column="PARENT_PHONE" jdbcType="INTEGER" property="parentPhone" />
   </resultMap>
+
+  <select id="selectClass" parameterType="kr.co.dwebss.child.model.ClassVO" resultMap="classMap">
+    	SELECT 
+			CLASS_ID ,
+			CLASS_NM , 
+			CENTER_ID , 
+			TEACHER_USER_ID ,
+			(select user_nm from user WHERE user_id =  TEACHER_USER_ID) as TEACHER_USER_NM
+		FROM CLASS 
+		WHERE 1=1
+		<if test="centerId !='' and  centerId !=null">
+		AND CENTER_ID = #{ centerId }
+		</if>
+		<if test="teacherUserId !='' and  teacherUserId !=null">
+		AND TEACHER_USER_ID = #{ teacherUserId }
+		</if>
+		<if test="teacherUserId !='' and  teacherUserId !=null">
+		AND TEACHER_USER_ID = #{ teacherUserId }
+		</if>
+		<if test="parentPhone !='' and  parentPhone !=null">
+		and class_id in (select class_id from child 
+		where PARENT_PHONE = #{ parentPhone })
+		</if>
+    </select>
+  
 </mapper>

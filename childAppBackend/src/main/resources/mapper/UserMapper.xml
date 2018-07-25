@@ -13,11 +13,12 @@
     <result column="USER_PASSWORD" jdbcType="CHAR" property="userPassword" />
     <result column="CENTER_ID" jdbcType="INTEGER" property="centerId" />
     <result column="CONFIRM_YN" jdbcType="CHAR" property="confirmYn" />
-    <result column="USER_EMAIL" jdbcType="VARCHAR" property="userEmail" />
     <result column="USER_ROLE_NM" jdbcType="VARCHAR" property="userRoleNm" />
     <result column="CENTER_NM" jdbcType="VARCHAR" property="centerNm" />
     <result column="CENTER_ADDR" jdbcType="VARCHAR" property="centerAddr" />
     <result column="CENTER_PHONE" jdbcType="VARCHAR" property="centerPhone" />
+    <result column="USER_EMAIL_GMAIL" jdbcType="VARCHAR" property="userEmailGmail" />
+    <result column="USER_EMAIL_FACEBOOK" jdbcType="VARCHAR" property="userEmailFacebook" />
   </resultMap>
   
   
@@ -33,7 +34,11 @@
 			AND USER_ID = #{userId}
 		</if>	
 		<if test="userEmail !='' and  userEmail !=null">
-			AND USER_EMAIL = #{userEmail}
+			AND (USER_EMAIL_GMAIL = #{userEmail}
+			OR USER_EMAIL_FACEBOOK = #{userEmail})
+		</if>	
+		<if test="userPhone !='' and  userPhone !=null">
+			AND USER_PHONE = #{userPhone}
 		</if>	
 	</sql>
   
@@ -46,8 +51,25 @@
 			USER_LOGIN_ID , 
 			USER_PASSWORD , 
 			CONFIRM_YN , 
-			CENTER_ID 
+			CENTER_ID ,
+			USER_EMAIL_GMAIL ,
+			USER_EMAIL_FACEBOOK
 		FROM USER 
 		<include refid="kr.co.dwebss.child.dao.UserMapper.SelectWhereQuery" />
     </select>
+    
+    
+  <update id="updateUser" parameterType="kr.co.dwebss.child.model.User">
+    	UPDATE USER SET
+		<if test="userEmailGmail !='' and  userEmailGmail !=null">
+    		USER_EMAIL_GMAIL = #{userEmailGmail}, 
+		</if>	
+		<if test="userEmailFacebook !='' and  userEmailFacebook !=null">
+    		USER_EMAIL_FACEBOOK = #{userEmailFacebook}, 
+		</if>	
+    		USER_NM = #{userNm}
+    	WHERE 1=1
+		AND USER_PHONE = #{userPhone}
+    </update>
+    
 </mapper>
