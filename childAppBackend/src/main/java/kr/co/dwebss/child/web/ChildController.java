@@ -320,8 +320,10 @@ public class ChildController {
 		for (int i = 0; i < classList.size(); i++) {
 			EventCheck eventCheck = classList.get(i);
 			
-			if (!(Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd()))
-					.equals(beforeDailyEventidCd)) {
+			if (!(Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd())+ Integer.toString(eventCheck.getClassId()))
+					.equals(beforeDailyEventidCd)
+					
+					) {
 				classDailyEventObj = new JSONObject();
 				classDailyEventObj.put("classDailyEventId", eventCheck.getClassDailyEventId());
 				classDailyEventObj.put("eventDate", eventCheck.getEventDate());
@@ -336,7 +338,7 @@ public class ChildController {
 			}
 			
 			beforeDailyEventidCd = Integer.toString(eventCheck.getClassDailyEventId())
-					+ Integer.toString(eventCheck.getEventCd());
+					+ Integer.toString(eventCheck.getEventCd())+ Integer.toString(eventCheck.getClassId());
 		}
 
 		for (int i = 0; i < classDailyEventArr.size(); i++) {
@@ -344,8 +346,9 @@ public class ChildController {
 			eventChkArr = new JSONArray();
 			for (int j = 0; j < classList.size(); j++) {
 				EventCheck eventCheck = classList.get(j);
-				if((Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd()))
-						.equals(classDailyEventObj.get("classDailyEventId").toString()+classDailyEventObj.get("eventCd").toString())) {
+				if((Integer.toString(eventCheck.getClassDailyEventId()) + Integer.toString(eventCheck.getEventCd())+ Integer.toString(eventCheck.getClassId()))
+						.equals(classDailyEventObj.get("classDailyEventId").toString()+classDailyEventObj.get("eventCd").toString()+classDailyEventObj.get("classId").toString()
+								)) {
 					eventChkObj = new JSONObject();
 					eventChkObj.put("eventCheckId", eventCheck.getEventCheckId());
 					eventChkObj.put("eventCheckDt", eventCheck.getEventCheckDt());
