@@ -56,6 +56,9 @@ public class User {
     
     @Column(name = "USER_EMAIL_FACEBOOK")
     private String userEmailFacebook;
+    
+    @Column(name = "PUSH_TOKEN")
+    private String pushToken;
 
     @Transient
     private String userEmail;
@@ -82,7 +85,15 @@ public class User {
     private List<ClassVO> centerClassList;
     
     
-    public String getUserEmail() {
+    public String getPushToken() {
+		return pushToken;
+	}
+
+	public void setPushToken(String pushToken) {
+		this.pushToken = pushToken;
+	}
+
+	public String getUserEmail() {
 		return userEmail;
 	}
 

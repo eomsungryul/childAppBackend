@@ -28,9 +28,37 @@
 		<result column="EVENT_CAR_NEED_YN" jdbcType="VARCHAR" property="eventCarNeedYn" />
 		<result column="EVENT_CHECK_DT" jdbcType="TIMESTAMP" property="eventCheckDt" />
 		<result column="CHILD_NM" jdbcType="VARCHAR" property="childNm" />
+		<result column="diffminite" jdbcType="INTEGER" property="diffMinite" />
 		
 	</resultMap>
-  
+	
+	
+	<select id="selectAlertAlarmChildList" resultMap="eventCheckMap">
+		select * from 
+		(select 
+		  ec.*,
+		  TIMESTAMPDIFF(MINUTE,now(),ec.EVENT_START_DT) as diffMinite,
+		  cde.event_alarm_start_t,
+  		  cde.CLASS_ID
+		from
+		(select * from event_check where DATE(EVENT_START_DT) = DATE_FORMAT(now(), '%Y-%m-%d') and EVENT_END_DT is null) ec , class_daily_event cde
+		WHERE ec.CLASS_DAILY_EVENT_ID = cde.CLASS_DAILY_EVENT_ID
+		AND cde.CLASS_ID =  ( SELECT CLASS_ID from child WHERE child.CHILD_ID  = ec.CHILD_ID )
+		) a
+		WHERE diffMinite > EVENT_ALARM_START_T
+	</select>
+		
+	
+
+	<select id="selectEventCheck" parameterType="kr.co.dwebss.child.model.EventCheck" resultMap="eventCheckMap">
+		SELECT * FROM EVENT_CHECK
+		WHERE 1=1 
+		AND CLASS_DAILY_EVENT_ID = #{classDailyEventId}
+		AND CHILD_ID = #{childId}
+		
+	</select>
+	
+	
 	<select id="selectEventCheckListForParent" parameterType="kr.co.dwebss.child.model.EventCheck" resultMap="eventCheckMap">
 		SELECT * FROM (
 			SELECT 

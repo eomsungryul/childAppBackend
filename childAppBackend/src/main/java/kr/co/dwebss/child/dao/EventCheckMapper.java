@@ -12,4 +12,8 @@ public interface EventCheckMapper extends Mapper<EventCheck> {
 	List<EventCheck> selectEventCheckListForTeacher(EventCheck param);
 
 	List<EventCheck> selectEventCheckListForCenter(EventCheck param);
+
+	List<EventCheck> selectEventCheck(EventCheck eventCheck);
+
+	List<EventCheck> selectAlertAlarmChildList();
 }

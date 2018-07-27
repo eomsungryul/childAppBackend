@@ -88,8 +88,10 @@ public class UserController {
         if (res ==null) {
         	user.setUserLoginId(phone);
         	userService.save(user);
+        	user = userService.selectUser(param);
         }else {
         	userService.updateUser(user);
+        	user = userService.selectUser(param);
         	
 	    	Child chVO = new Child();
 	    	chVO.setParentPhone(res.getUserPhone());	

@@ -86,7 +86,19 @@ public class EventCheck {
 
     @Transient
     private String childNm;
-    
+
+    @Transient
+    private Integer diffminite;
+
+	public Integer getDiffminite() {
+		return diffminite;
+	}
+
+
+	public void setDiffminite(Integer diffminite) {
+		this.diffminite = diffminite;
+	}
+
 
 	public String getChildNm() {
 		return childNm;

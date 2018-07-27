@@ -7,6 +7,8 @@ import kr.co.dwebss.child.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 
@@ -27,6 +29,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 	@Override
 	public void updateUser(User user) {
 		userMapper.updateUser(user);
+	}
+
+	@Override
+	public List<User> selectAlarmUserList(String childId) {
+		return userMapper.selectAlarmUserList(childId);
 	}
 
 }

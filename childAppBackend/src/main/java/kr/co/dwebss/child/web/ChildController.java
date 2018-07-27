@@ -65,7 +65,13 @@ public class ChildController {
 	public Result add(@RequestBody EventCheck eventCheck) {
 		if(systemVersion.equals("dev")) {
 		}else {
-			eventCheckService.save(eventCheck);
+			List<EventCheck> eventList= eventCheckService.selectEventCheck(eventCheck);
+			if(eventList.size()>0) {
+				eventCheck.setEventCheckId(eventList.get(0).getEventCheckId());
+				eventCheckService.update(eventCheck);
+			}else {
+				eventCheckService.save(eventCheck);
+			}
 		}
 		return ResultGenerator.genSuccessResult();
 	}

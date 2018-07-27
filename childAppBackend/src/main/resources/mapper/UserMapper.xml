@@ -72,4 +72,17 @@
 		AND USER_PHONE = #{userPhone}
     </update>
     
+  <select id="selectAlarmUserList" parameterType="kr.co.dwebss.child.model.User" resultMap="userMap">
+		SELECT 
+		  *  
+		FROM USER 
+		WHERE 1=1
+		#원장님 조건
+		AND (user.CENTER_ID = (select center_id from class where class_id = (select class_id from child where CHILD_ID = #{childId})) AND USER_ROLE_CD=100002)
+		#선생님 조건
+		or (user.USER_ID = (select TEACHER_USER_ID from class where class_id = (select class_id from child where CHILD_ID = #{childId})) )
+		#부모님 조건
+		or USER_PHONE=(select PARENT_PHONE from child where CHILD_ID = #{childId})
+  </select>
+    
 </mapper>

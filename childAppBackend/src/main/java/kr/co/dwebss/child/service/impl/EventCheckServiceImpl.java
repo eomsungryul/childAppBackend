@@ -36,4 +36,14 @@ public class EventCheckServiceImpl extends AbstractService<EventCheck> implement
 		return eventCheckMapper.selectEventCheckListForCenter(param);
 	}
 
+	@Override
+	public List<EventCheck> selectEventCheck(EventCheck eventCheck) {
+		return eventCheckMapper.selectEventCheck(eventCheck);
+	}
+
+	@Override
+	public List<EventCheck> selectAlertAlarmChildList() {
+		return eventCheckMapper.selectAlertAlarmChildList();
+	}
+
 }
