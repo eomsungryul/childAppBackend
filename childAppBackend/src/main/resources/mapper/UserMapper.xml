@@ -67,6 +67,9 @@
 		<if test="userEmailFacebook !='' and  userEmailFacebook !=null">
     		USER_EMAIL_FACEBOOK = #{userEmailFacebook}, 
 		</if>	
+		<if test="pushToken !='' and  pushToken !=null">
+    		PUSH_TOKEN = #{pushToken}, 
+		</if>	
     		USER_NM = #{userNm}
     	WHERE 1=1
 		AND USER_PHONE = #{userPhone}

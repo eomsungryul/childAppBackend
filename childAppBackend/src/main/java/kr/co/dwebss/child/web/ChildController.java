@@ -1,15 +1,18 @@
 package kr.co.dwebss.child.web;
 
+import kr.co.dwebss.child.cmmn.FcmUtil;
 import kr.co.dwebss.child.core.Result;
 import kr.co.dwebss.child.core.ResultGenerator;
 import kr.co.dwebss.child.model.Child;
 import kr.co.dwebss.child.model.ClassDailyEvent;
 import kr.co.dwebss.child.model.ClassVO;
 import kr.co.dwebss.child.model.EventCheck;
+import kr.co.dwebss.child.model.User;
 import kr.co.dwebss.child.service.ChildService;
 import kr.co.dwebss.child.service.ClassDailyEventService;
 import kr.co.dwebss.child.service.ClassService;
 import kr.co.dwebss.child.service.EventCheckService;
+import kr.co.dwebss.child.service.UserService;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -46,6 +49,9 @@ public class ChildController {
 
 	@Resource
 	private EventCheckService eventCheckService;
+	
+	@Resource
+	private UserService userService;
 
     @Value("${systemVersion}") 
     String systemVersion;
@@ -58,13 +64,33 @@ public class ChildController {
     
     @Value("${dummyTeacherUserId}") 
     String dummyTeacherUserId;
-	
-	
 
+
+    @Value("${centerTitleMsg}") 
+    String centerTitleMsg;
+    @Value("${centerBodyMsg}") 
+    String centerBodyMsg;
+    
+    @Value("${tearcherTitleMsg}") 
+    String tearcherTitleMsg;
+    @Value("${tearcherBodyMsg}") 
+    String tearcherBodyMsg;
+    
+    @Value("${parentTitleMsg}") 
+    String parentTitleMsg;
+    @Value("${parentBodyMsg}") 
+    String parentBodyMsg;
+    
+    @Resource
+    private FcmUtil fcmUtil;
+	
+	
+    //qr코드 찍을 시 
 	@PostMapping("/event_check")
-	public Result add(@RequestBody EventCheck eventCheck) {
+	public Result add(@RequestBody EventCheck eventCheck) throws Exception {
 		if(systemVersion.equals("dev")) {
 		}else {
+			
 			List<EventCheck> eventList= eventCheckService.selectEventCheck(eventCheck);
 			if(eventList.size()>0) {
 				eventCheck.setEventCheckId(eventList.get(0).getEventCheckId());
@@ -72,6 +98,32 @@ public class ChildController {
 			}else {
 				eventCheckService.save(eventCheck);
 			}
+			// 이벤트 체크 테이블을 저장 하고  알람 보내기
+			String userTokenId = "";
+			String title = "";
+			String body = "";
+			
+			// 2. 어린이의 비상연락망( 부모님, 어린이집원장님,어린이집선생님)의 리스트를 가져온다. selectAlarmUserList
+			List<User> userList = userService.selectAlarmUserList(eventCheck.getChildId());
+			//3. 비상연락망들의 usrRoleCd에 따라 알람 메시지를 변경한다. 
+			for(int j = 0; j<userList.size(); j++) {
+				int roldCd = userList.get(j).getUserRoleCd();
+				userTokenId = userList.get(j).getPushToken();
+
+				if(roldCd==100004) { 
+					title = parentTitleMsg;
+					body = parentBodyMsg;
+
+					//4. 파이어 베이스에 알람을 보내는 url을 보낸다.
+//					fcmUtil.sendFcm(userTokenId, title, body);
+					
+					System.out.println("title : "+title);
+					System.out.println("body : "+body);
+					System.out.println("userTokenId : "+userTokenId);
+				}
+
+			}
+			
 		}
 		return ResultGenerator.genSuccessResult();
 	}
@@ -107,11 +159,19 @@ public class ChildController {
 	 @PathVariable @DateTimeFormat(pattern = "yyyyMMdd") LocalDate date) {
 		EventCheck param = new EventCheck();
 		param.setParentPhone(phone);
-		if(systemVersion.equals("dev")) {
-			param.setParentPhone(dummyPhone);
-		}
+//		if(systemVersion.equals("dev")) {
+//			param.setParentPhone(dummyPhone);
+//		}
 		
 		List<EventCheck> classList = eventCheckService.selectEventCheckListForParent(param);
+		
+
+		if(classList.size()==0) {
+			param.setParentPhone(dummyPhone);
+			classList = eventCheckService.selectEventCheckListForParent(param);
+		}
+		
+		
 		JSONArray classArr = getMainCheckEventList(classList);
 		
 		return ResultGenerator.genSuccessResult(classArr);
@@ -121,11 +181,17 @@ public class ChildController {
 	public Result getMyChildsCheckEventList(@PathVariable String phone) {
 		EventCheck param = new EventCheck();
 		param.setParentPhone(phone);
-		if(systemVersion.equals("dev")) {
-			param.setParentPhone(dummyPhone);
-		}
+//		if(systemVersion.equals("dev")) {
+//			param.setParentPhone(dummyPhone);
+//		}
 		
 		List<EventCheck> classList = eventCheckService.selectEventCheckListForParent(param);
+
+		if(classList.size()==0) {
+			param.setParentPhone(dummyPhone);
+			classList = eventCheckService.selectEventCheckListForParent(param);
+		}
+		
 		JSONArray classArr = getMainCheckEventList(classList);
 		
 		return ResultGenerator.genSuccessResult(classArr);
