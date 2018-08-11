@@ -109,17 +109,17 @@ public class ChildController {
 			for(int j = 0; j<userList.size(); j++) {
 				int roldCd = userList.get(j).getUserRoleCd();
 				userTokenId = userList.get(j).getPushToken();
-
+				
 				if(roldCd==100004) { 
 					title = parentTitleMsg;
 					body = parentBodyMsg;
 
 					//4. 파이어 베이스에 알람을 보내는 url을 보낸다.
-//					fcmUtil.sendFcm(userTokenId, title, body);
+					fcmUtil.sendFcm(userTokenId, title, body);
 					
-					System.out.println("title : "+title);
-					System.out.println("body : "+body);
-					System.out.println("userTokenId : "+userTokenId);
+//					System.out.println("title : "+title);
+//					System.out.println("body : "+body);
+//					System.out.println("userTokenId : "+userTokenId);
 				}
 
 			}
