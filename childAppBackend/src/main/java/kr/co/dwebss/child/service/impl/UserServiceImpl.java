@@ -36,4 +36,9 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 		return userMapper.selectAlarmUserList(childId);
 	}
 
+	@Override
+	public List<User> selectParentList(String childId) {
+		return userMapper.selectParentList(childId);
+	}
+
 }

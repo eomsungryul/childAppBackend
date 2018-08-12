@@ -10,4 +10,6 @@ public interface ClassDailyEventMapper extends Mapper<ClassDailyEvent> {
 	void merge(ClassDailyEvent vo);
 
 	List<ClassDailyEvent> selectClassEvent(ClassDailyEvent cdeVO);
+
+	String selectEventLocation(Integer classDailyEventId);
 }

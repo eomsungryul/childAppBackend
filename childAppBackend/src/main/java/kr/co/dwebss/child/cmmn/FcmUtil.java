@@ -47,7 +47,8 @@ public class FcmUtil {
 //        String input = "{\"notification\" : {\"title\" : \"여기다 제목 넣기 \", \"body\" : \"여기다 내용 넣기\"}, \"to\":\"/topics/ALL\"}";
         
         // 이걸로 보내면 특정 토큰을 가지고있는 어플에만 알림을 날려준다  위에 둘중에 한개 골라서 날려주자
-        String input = "{\"notification\" : {\"title\" : \""+title+"\", \"body\" : \""+body+"\"}, \"to\":\""+userTokenId+"\"}";
+//        String input = "{\"notification\" : {\"title\" : \""+title+"\", \"body\" : \""+body+"\"}, \"to\":\""+userTokenId+"\"}";
+        String input = "{\"data\" : {\"title\" : \""+title+"\", \"content\" : \""+body+"\"}, \"to\":\""+userTokenId+"\"}";
 
         OutputStream os = conn.getOutputStream();
         

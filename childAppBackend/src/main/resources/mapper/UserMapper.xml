@@ -19,6 +19,7 @@
     <result column="CENTER_PHONE" jdbcType="VARCHAR" property="centerPhone" />
     <result column="USER_EMAIL_GMAIL" jdbcType="VARCHAR" property="userEmailGmail" />
     <result column="USER_EMAIL_FACEBOOK" jdbcType="VARCHAR" property="userEmailFacebook" />
+    <result column="PUSH_TOKEN" jdbcType="VARCHAR" property="pushToken" />
   </resultMap>
   
   
@@ -53,7 +54,8 @@
 			CONFIRM_YN , 
 			CENTER_ID ,
 			USER_EMAIL_GMAIL ,
-			USER_EMAIL_FACEBOOK
+			USER_EMAIL_FACEBOOK,
+			PUSH_TOKEN
 		FROM USER 
 		<include refid="kr.co.dwebss.child.dao.UserMapper.SelectWhereQuery" />
     </select>
@@ -86,6 +88,14 @@
 		or (user.USER_ID = (select TEACHER_USER_ID from class where class_id = (select class_id from child where CHILD_ID = #{childId})) )
 		#부모님 조건
 		or USER_PHONE=(select PARENT_PHONE from child where CHILD_ID = #{childId})
+  </select>
+    
+  <select id="selectParentList" parameterType="kr.co.dwebss.child.model.User" resultMap="userMap">
+		SELECT 
+		  *  
+		FROM USER 
+		WHERE 1=1
+		AND USER_PHONE=(select PARENT_PHONE from child where CHILD_ID = #{childId})
   </select>
     
 </mapper>

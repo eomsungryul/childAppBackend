@@ -91,28 +91,46 @@ public class ChildController {
 		if(systemVersion.equals("dev")) {
 		}else {
 			
+			String status = "";
+			
 			List<EventCheck> eventList= eventCheckService.selectEventCheck(eventCheck);
 			if(eventList.size()>0) {
 				eventCheck.setEventCheckId(eventList.get(0).getEventCheckId());
 				eventCheckService.update(eventCheck);
+				status= "도착";
 			}else {
 				eventCheckService.save(eventCheck);
+				status= "출발";
 			}
 			// 이벤트 체크 테이블을 저장 하고  알람 보내기
 			String userTokenId = "";
 			String title = "";
 			String body = "";
 			
+			String location = "";
+			String childNm = "";
+			
+			Child childParam = new Child();
+			childParam.setChildId(eventCheck.getChildId());
+			//어린이 이름 가져오기
+			List<Child> child =  childService.selectChild(childParam);
+			childNm = child.get(0).getChildNm();
+			// 1. 이벤트의 위치 정보 가져오기 
+
+			location = classDailyEventService.selectEventLocation(eventCheck.getClassDailyEventId());
+			
+			
 			// 2. 어린이의 비상연락망( 부모님, 어린이집원장님,어린이집선생님)의 리스트를 가져온다. selectAlarmUserList
-			List<User> userList = userService.selectAlarmUserList(eventCheck.getChildId());
+			List<User> userList = userService.selectParentList(eventCheck.getChildId());
 			//3. 비상연락망들의 usrRoleCd에 따라 알람 메시지를 변경한다. 
 			for(int j = 0; j<userList.size(); j++) {
 				int roldCd = userList.get(j).getUserRoleCd();
 				userTokenId = userList.get(j).getPushToken();
 				
+				
 				if(roldCd==100004) { 
 					title = parentTitleMsg;
-					body = parentBodyMsg;
+					body = childNm+" 어린이가 " +location+" (으)로"+ status+parentBodyMsg;
 
 					//4. 파이어 베이스에 알람을 보내는 url을 보낸다.
 					fcmUtil.sendFcm(userTokenId, title, body);

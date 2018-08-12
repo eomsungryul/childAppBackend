@@ -12,5 +12,7 @@ public interface UserMapper extends Mapper<User> {
 	void updateUser(User user);
 
 	List<User> selectAlarmUserList(String childId);
+
+	List<User> selectParentList(String childId);
 	
 }

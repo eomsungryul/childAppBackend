@@ -33,4 +33,12 @@
 		</if>
 	</select>
   
+  <select id="selectEventLocation" parameterType="integer" resultType="String">
+    	SELECT 
+    		DISTINCT DESTINY_NM
+		FROM CLASS_DAILY_EVENT 
+		WHERE 1=1
+		AND CLASS_DAILY_EVENT_ID = #{classDailyEventId}
+	</select>
+  
 </mapper>

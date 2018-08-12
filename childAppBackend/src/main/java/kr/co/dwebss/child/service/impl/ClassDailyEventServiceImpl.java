@@ -26,5 +26,10 @@ public class ClassDailyEventServiceImpl extends AbstractService<ClassDailyEvent>
 		return classDailyEventMapper.selectClassEvent(cdeVO);
 	}
 
+	@Override
+	public String selectEventLocation(Integer classDailyEventId) {
+		return classDailyEventMapper.selectEventLocation(classDailyEventId);
+	}
+
 
 }

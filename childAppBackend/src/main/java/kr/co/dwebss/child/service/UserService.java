@@ -17,4 +17,6 @@ public interface UserService extends Service<User> {
 
 	List<User> selectAlarmUserList(String childId);
 
+	List<User> selectParentList(String childId);
+
 }

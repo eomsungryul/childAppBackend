@@ -13,4 +13,6 @@ public interface ClassDailyEventService extends Service<ClassDailyEvent> {
 
 	List<ClassDailyEvent> selectClassEvent(ClassDailyEvent cdeVO);
 
+	String selectEventLocation(Integer classDailyEventId);
+
 }
