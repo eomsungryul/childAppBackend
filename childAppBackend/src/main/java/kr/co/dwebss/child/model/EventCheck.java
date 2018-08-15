@@ -88,15 +88,15 @@ public class EventCheck {
     private String childNm;
 
     @Transient
-    private Integer diffminite;
+    private Integer diffMinite;
 
-	public Integer getDiffminite() {
-		return diffminite;
+	public Integer getDiffMinite() {
+		return diffMinite;
 	}
 
 
-	public void setDiffminite(Integer diffminite) {
-		this.diffminite = diffminite;
+	public void setDiffMinite(Integer diffMinite) {
+		this.diffMinite = diffMinite;
 	}
 
 

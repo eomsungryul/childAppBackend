@@ -130,7 +130,7 @@ public class ChildController {
 				
 				if(roldCd==100004) { 
 					title = parentTitleMsg;
-					body = childNm+" 어린이가 " +location+" (으)로"+ status+parentBodyMsg;
+					body = childNm+" 어린이가 " +location+" (으)로 "+ status+parentBodyMsg;
 
 					//4. 파이어 베이스에 알람을 보내는 url을 보낸다.
 					fcmUtil.sendFcm(userTokenId, title, body);

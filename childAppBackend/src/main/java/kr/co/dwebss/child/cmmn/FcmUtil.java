@@ -58,9 +58,9 @@ public class FcmUtil {
         os.close();
 
         int responseCode = conn.getResponseCode();
-//        System.out.println("\nSending 'POST' request to URL : " + url);
-//        System.out.println("Post parameters : " + input);
-//        System.out.println("Response Code : " + responseCode);
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + input);
+        System.out.println("Response Code : " + responseCode);
         
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
@@ -71,7 +71,7 @@ public class FcmUtil {
         }
         in.close();
         // print result
-//        System.out.println(response.toString());
+        System.out.println(response.toString());
 
 		return response.toString();  
 	}
