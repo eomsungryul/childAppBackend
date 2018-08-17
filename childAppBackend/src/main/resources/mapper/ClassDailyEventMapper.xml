@@ -31,6 +31,7 @@
 		<if	test="eventDate != null">
 			AND EVENT_DATE = DATE_FORMAT( #{ eventDate }, '%Y-%m-%d')
 		</if>
+		ORDER BY EVENT_ORDER
 	</select>
   
   <select id="selectEventLocation" parameterType="integer" resultType="String">

@@ -129,7 +129,7 @@
 				#부모님의 USER_ID를 받은 경우
 				AND A.CLASS_ID IN (SELECT CLASS_ID FROM CHILD WHERE PARENT_PHONE = #{parentPhone}) 
 			) A
-			ORDER BY CLASS_ID, CLASS_DAILY_EVENT_ID,  EVENT_CD, CHILD_NM
+			ORDER BY CLASS_ID, EVENT_ORDER, CLASS_DAILY_EVENT_ID,  EVENT_ORDER,  CHILD_NM
 	</select>
   
   
@@ -203,7 +203,7 @@
 				#선생님의 USER_ID를 받은 경우
 				and a.class_id in (select class_id from class where teacher_user_id = #{teacherUserId})
 			) A
-			ORDER BY CLASS_ID, CLASS_DAILY_EVENT_ID,  EVENT_CD, CHILD_NM
+			ORDER BY CLASS_ID, EVENT_ORDER, CLASS_DAILY_EVENT_ID,  EVENT_ORDER, CHILD_NM
 	</select>
 	
 	
@@ -277,7 +277,7 @@
 				#원장님의 centerId를 받은 경우
 				and a.class_id in (select class_id from class where center_id=#{centerId})
 			) A
-			ORDER BY CLASS_ID, CLASS_DAILY_EVENT_ID,  EVENT_CD, CHILD_NM
+			ORDER BY CLASS_ID, EVENT_ORDER, CLASS_DAILY_EVENT_ID,  EVENT_ORDER, CHILD_NM
 	</select>
   
   
