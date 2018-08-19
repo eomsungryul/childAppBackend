@@ -46,11 +46,23 @@ public class ClassDailyEvent {
     @Column(name = "EVENT_CAR_NEED_YN")
     private String eventCarNeedYn;
     
+
+    @Column(name = "EVENT_CHECK_TYPE")
+    private Integer eventCheckType;
+    
     @Transient
     private List<EventCheck> eventCheckList;
     
 
-    public List<EventCheck> getEventCheckList() {
+    public Integer getEventCheckType() {
+		return eventCheckType;
+	}
+
+	public void setEventCheckType(Integer eventCheckType) {
+		this.eventCheckType = eventCheckType;
+	}
+
+	public List<EventCheck> getEventCheckList() {
 		return eventCheckList;
 	}
 

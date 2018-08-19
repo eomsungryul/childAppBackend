@@ -59,6 +59,12 @@ public class User {
     
     @Column(name = "PUSH_TOKEN")
     private String pushToken;
+    
+    @Column(name = "ALARM_NORMAL_YN")
+    private String alarmNormalYn;
+    
+    @Column(name = "ALARM_EMERGENCY_YN")
+    private String alarmEmergencyYn;
 
     @Transient
     private String userEmail;
@@ -84,8 +90,23 @@ public class User {
     @Transient
     private List<ClassVO> centerClassList;
     
-    
-    public String getPushToken() {
+    public String getAlarmNormalYn() {
+		return alarmNormalYn;
+	}
+
+	public void setAlarmNormalYn(String alarmNormalYn) {
+		this.alarmNormalYn = alarmNormalYn;
+	}
+
+	public String getAlarmEmergencyYn() {
+		return alarmEmergencyYn;
+	}
+
+	public void setAlarmEmergencyYn(String alarmEmergencyYn) {
+		this.alarmEmergencyYn = alarmEmergencyYn;
+	}
+
+	public String getPushToken() {
 		return pushToken;
 	}
 

@@ -19,4 +19,9 @@ public class CommonCodeServiceImpl extends AbstractService<CommonCode> implement
     @Resource
     private CommonCodeMapper commonCodeMapper;
 
+	@Override
+	public CommonCode selectCode(Integer eventCheckType) {
+		return commonCodeMapper.selectCode(eventCheckType);
+	}
+
 }

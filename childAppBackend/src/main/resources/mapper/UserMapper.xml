@@ -20,6 +20,8 @@
     <result column="USER_EMAIL_GMAIL" jdbcType="VARCHAR" property="userEmailGmail" />
     <result column="USER_EMAIL_FACEBOOK" jdbcType="VARCHAR" property="userEmailFacebook" />
     <result column="PUSH_TOKEN" jdbcType="VARCHAR" property="pushToken" />
+    <result column="ALARM_NORMAL_YN" jdbcType="CHAR" property="alarmNormalYn" />
+    <result column="ALARM_EMERGENCY_YN" jdbcType="CHAR" property="alarmEmergencyYn" />
   </resultMap>
   
   
@@ -55,7 +57,9 @@
 			CENTER_ID ,
 			USER_EMAIL_GMAIL ,
 			USER_EMAIL_FACEBOOK,
-			PUSH_TOKEN
+			PUSH_TOKEN,
+			ALARM_NORMAL_YN,
+			ALARM_EMERGENCY_YN
 		FROM USER 
 		<include refid="kr.co.dwebss.child.dao.UserMapper.SelectWhereQuery" />
     </select>
@@ -71,6 +75,12 @@
 		</if>	
 		<if test="pushToken !='' and  pushToken !=null">
     		PUSH_TOKEN = #{pushToken}, 
+		</if>	
+		<if test="alarmNormalYn !='' and  alarmNormalYn !=null">
+    		ALARM_NORMAL_YN = #{alarmNormalYn}, 
+		</if>	
+		<if test="alarmEmergencyYn !='' and  alarmEmergencyYn !=null">
+    		ALARM_EMERGENCY_YN = #{alarmEmergencyYn}, 
 		</if>	
     		USER_NM = #{userNm}
     	WHERE 1=1

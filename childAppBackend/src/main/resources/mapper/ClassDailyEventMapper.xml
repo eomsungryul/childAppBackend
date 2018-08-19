@@ -13,6 +13,7 @@
     <result column="EVENT_ALARM_END_T" jdbcType="INTEGER" property="eventAlarmEndT" />
     <result column="EVENT_ALARM_START_T" jdbcType="INTEGER" property="eventAlarmStartT" />
     <result column="EVENT_CAR_NEED_YN" jdbcType="VARCHAR" property="eventCarNeedYn" />
+    <result column="EVENT_CHECK_TYPE" jdbcType="INTEGER" property="eventCheckType" />
   </resultMap>
   
   <select id="selectClassEvent" parameterType="kr.co.dwebss.child.model.ClassDailyEvent" resultMap="classDailyEventMap">
@@ -24,7 +25,7 @@
 			DESTINY_NM ,
 			EVENT_ALARM_END_T ,
 			EVENT_ALARM_START_T ,
-			EVENT_CAR_NEED_YN
+			EVENT_CHECK_TYPE
 		FROM CLASS_DAILY_EVENT 
 		WHERE 1=1
 		AND CLASS_ID = #{classId}

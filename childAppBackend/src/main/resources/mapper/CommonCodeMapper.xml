@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.dwebss.child.dao.CommonCodeMapper">
-  <resultMap id="BaseResultMap" type="kr.co.dwebss.child.model.CommonCode">
+  <resultMap id="commonCodeMap" type="kr.co.dwebss.child.model.CommonCode">
     <!--
       WARNING - @mbg.generated
     -->
@@ -11,4 +11,18 @@
     <result column="CODE_ENG_NM" jdbcType="VARCHAR" property="codeEngNm" />
     <result column="CODE_USE_YN" jdbcType="CHAR" property="codeUseYn" />
   </resultMap>
+  
+  
+    <select id="selectCode" parameterType="INTEGER" resultMap="commonCodeMap">
+    	SELECT 
+			CODE ,
+			CODE_CATEGORY_ID , 
+			CODE_NM , 
+			CODE_ENG_NM , 
+			CODE_USE_YN 
+		FROM COMMON_CODE
+		WHERE 1=1
+		AND CODE =#{ code }
+    </select>
+  
 </mapper>

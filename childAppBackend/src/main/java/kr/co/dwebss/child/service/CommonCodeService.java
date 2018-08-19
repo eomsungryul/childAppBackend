@@ -8,4 +8,6 @@ import kr.co.dwebss.child.core.Service;
  */
 public interface CommonCodeService extends Service<CommonCode> {
 
+	CommonCode selectCode(Integer eventCheckType);
+
 }

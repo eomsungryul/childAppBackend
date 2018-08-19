@@ -48,8 +48,8 @@ public class FcmUtil {
         
         // 이걸로 보내면 특정 토큰을 가지고있는 어플에만 알림을 날려준다  위에 둘중에 한개 골라서 날려주자
 //        String input = "{\"notification\" : {\"title\" : \""+title+"\", \"body\" : \""+body+"\"}, \"to\":\""+userTokenId+"\"}";
-        String input = "{\"data\" : {\"title\" : \""+title+"\", \"content\" : \""+body+"\"}, \"to\":\""+userTokenId+"\"}";
-
+        String input = "{\"data\" : {\"title\" : \""+title+"\", \"content\" : \""+body+"\"}, \"to\":\""+userTokenId+"\", \"priority\":\"high\"}";
+        
         OutputStream os = conn.getOutputStream();
         
         // 서버에서 날려서 한글 깨지는 사람은 아래처럼  UTF-8로 인코딩해서 날려주자

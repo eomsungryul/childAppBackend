@@ -6,11 +6,13 @@ import kr.co.dwebss.child.core.ResultGenerator;
 import kr.co.dwebss.child.model.Child;
 import kr.co.dwebss.child.model.ClassDailyEvent;
 import kr.co.dwebss.child.model.ClassVO;
+import kr.co.dwebss.child.model.CommonCode;
 import kr.co.dwebss.child.model.EventCheck;
 import kr.co.dwebss.child.model.User;
 import kr.co.dwebss.child.service.ChildService;
 import kr.co.dwebss.child.service.ClassDailyEventService;
 import kr.co.dwebss.child.service.ClassService;
+import kr.co.dwebss.child.service.CommonCodeService;
 import kr.co.dwebss.child.service.EventCheckService;
 import kr.co.dwebss.child.service.UserService;
 
@@ -52,6 +54,9 @@ public class ChildController {
 	
 	@Resource
 	private UserService userService;
+	
+    @Resource
+    private CommonCodeService commonCodeService;
 
     @Value("${systemVersion}") 
     String systemVersion;
@@ -90,18 +95,17 @@ public class ChildController {
 	public Result add(@RequestBody EventCheck eventCheck) throws Exception {
 		if(systemVersion.equals("dev")) {
 		}else {
-			
-			String status = "";
-			
+
 			List<EventCheck> eventList= eventCheckService.selectEventCheck(eventCheck);
 			if(eventList.size()>0) {
-				eventCheck.setEventCheckId(eventList.get(0).getEventCheckId());
-				eventCheckService.update(eventCheck);
-				status= "도착";
+				
 			}else {
 				eventCheckService.save(eventCheck);
-				status= "출발";
 			}
+			
+			CommonCode code =commonCodeService.selectCode(eventCheck.getEventCheckType());
+			String status = code.getCodeNm();
+			
 			// 이벤트 체크 테이블을 저장 하고  알람 보내기
 			String userTokenId = "";
 			String title = "";
@@ -112,13 +116,13 @@ public class ChildController {
 			
 			Child childParam = new Child();
 			childParam.setChildId(eventCheck.getChildId());
+			
 			//어린이 이름 가져오기
 			List<Child> child =  childService.selectChild(childParam);
 			childNm = child.get(0).getChildNm();
-			// 1. 이벤트의 위치 정보 가져오기 
-
-			location = classDailyEventService.selectEventLocation(eventCheck.getClassDailyEventId());
 			
+			// 1. 이벤트의 위치 정보 가져오기 
+			location = classDailyEventService.selectEventLocation(eventCheck.getClassDailyEventId());
 			
 			// 2. 어린이의 비상연락망( 부모님, 어린이집원장님,어린이집선생님)의 리스트를 가져온다. selectAlarmUserList
 			List<User> userList = userService.selectParentList(eventCheck.getChildId());
@@ -127,10 +131,20 @@ public class ChildController {
 				int roldCd = userList.get(j).getUserRoleCd();
 				userTokenId = userList.get(j).getPushToken();
 				
-				
 				if(roldCd==100004) { 
+
 					title = parentTitleMsg;
-					body = childNm+" 어린이가 " +location+" (으)로 "+ status+parentBodyMsg;
+					if(eventCheck.getEventCheckType()==300001) {
+						body = "방금 " +childNm+" 어린이가 " +location+" (으)로 "+ "출발"+parentBodyMsg;
+						
+					}else if(eventCheck.getEventCheckType()==300002) {
+						body = "방금 " +childNm+" 어린이가 " +location+" (으)로 "+ "도착"+parentBodyMsg;
+						
+					}else if(eventCheck.getEventCheckType()==300003) {
+						body = "방금 " +childNm+" 어린이가 " +location+"에서 선생님과 같이 있다고 확인되었습니다";
+						
+					}
+//					body = "방금 " +childNm+" 어린이가 " +location+" (으)로 "+ status+parentBodyMsg;
 
 					//4. 파이어 베이스에 알람을 보내는 url을 보낸다.
 					fcmUtil.sendFcm(userTokenId, title, body);
@@ -145,6 +159,66 @@ public class ChildController {
 		}
 		return ResultGenerator.genSuccessResult();
 	}
+//	//qr코드 찍을 시  백업
+//	@PostMapping("/event_check")
+//	public Result add(@RequestBody EventCheck eventCheck) throws Exception {
+//		if(systemVersion.equals("dev")) {
+//		}else {
+//			
+//			String status = "";
+//			
+//			List<EventCheck> eventList= eventCheckService.selectEventCheck(eventCheck);
+//			if(eventList.size()>0) {
+//				eventCheck.setEventCheckId(eventList.get(0).getEventCheckId());
+//				eventCheckService.update(eventCheck);
+//				status= "도착";
+//			}else {
+//				eventCheckService.save(eventCheck);
+//				status= "출발";
+//			}
+//			// 이벤트 체크 테이블을 저장 하고  알람 보내기
+//			String userTokenId = "";
+//			String title = "";
+//			String body = "";
+//			
+//			String location = "";
+//			String childNm = "";
+//			
+//			Child childParam = new Child();
+//			childParam.setChildId(eventCheck.getChildId());
+//			//어린이 이름 가져오기
+//			List<Child> child =  childService.selectChild(childParam);
+//			childNm = child.get(0).getChildNm();
+//			// 1. 이벤트의 위치 정보 가져오기 
+//			
+//			location = classDailyEventService.selectEventLocation(eventCheck.getClassDailyEventId());
+//			
+//			
+//			// 2. 어린이의 비상연락망( 부모님, 어린이집원장님,어린이집선생님)의 리스트를 가져온다. selectAlarmUserList
+//			List<User> userList = userService.selectParentList(eventCheck.getChildId());
+//			//3. 비상연락망들의 usrRoleCd에 따라 알람 메시지를 변경한다. 
+//			for(int j = 0; j<userList.size(); j++) {
+//				int roldCd = userList.get(j).getUserRoleCd();
+//				userTokenId = userList.get(j).getPushToken();
+//				
+//				
+//				if(roldCd==100004) { 
+//					title = parentTitleMsg;
+//					body = childNm+" 어린이가 " +location+" (으)로 "+ status+parentBodyMsg;
+//					
+//					//4. 파이어 베이스에 알람을 보내는 url을 보낸다.
+//					fcmUtil.sendFcm(userTokenId, title, body);
+//					
+////					System.out.println("title : "+title);
+////					System.out.println("body : "+body);
+////					System.out.println("userTokenId : "+userTokenId);
+//				}
+//				
+//			}
+//			
+//		}
+//		return ResultGenerator.genSuccessResult();
+//	}
 
 	@DeleteMapping("/{id}")
 	public Result delete(@PathVariable Integer id) {

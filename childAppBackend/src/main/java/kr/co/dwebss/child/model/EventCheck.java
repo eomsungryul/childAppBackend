@@ -42,6 +42,9 @@ public class EventCheck {
     @Column(name = "EVENT_END_DT")
     private Date eventEndDt;
 
+    @Column(name = "EVENT_CHECK_TYPE")
+    private Integer eventCheckType;
+
     @Transient
     private Integer eventCd;
 
@@ -89,6 +92,16 @@ public class EventCheck {
 
     @Transient
     private Integer diffMinite;
+
+	public Integer getEventCheckType() {
+		return eventCheckType;
+	}
+
+
+	public void setEventCheckType(Integer eventCheckType) {
+		this.eventCheckType = eventCheckType;
+	}
+
 
 	public Integer getDiffMinite() {
 		return diffMinite;
